@@ -1,0 +1,90 @@
+USE MASTER
+GO
+
+IF DB_ID('quanlybanhang') IS NOT NULL BEGIN
+DROP DATABASE quanlybanhang
+END
+GO
+
+CREATE DATABASE quanlybanhang
+GO
+
+USE quanlybanhang
+GO
+
+CREATE TABLE danhmuc
+(
+	madm			nvarchar(50)	PRIMARY KEY NOT NULL,
+	tendanhmuc		nvarchar(255)	NULL,
+	ghichu			ntext			NULL
+)	
+GO
+
+CREATE TABLE sanpham
+(
+	masp			nvarchar(50)	PRIMARY KEY NOT NULL,
+	tensp			nvarchar(255)	NULL,
+	giasp			decimal(12,3)	NULL,
+	mota			ntext			NULL,
+	hinh			nvarchar(255)	NULL,
+	soluong			int				NULL,
+	madm			nvarchar(50)	FOREIGN KEY REFERENCES danhmuc(madm)
+)
+GO
+
+CREATE TABLE [user]
+(
+	id				int				PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	username		nvarchar(50)	NOT NULL,
+	[password]		nvarchar(50)	NULL,
+	fullname		nvarchar(50)	NULL,
+	email			nvarchar(50)	NULL,
+	phone			nchar(10)		NULL,
+	[role]			int				NULL,
+)
+GO
+
+CREATE TABLE hoadon
+(
+	id				int				PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	userId			int				FOREIGN KEY REFERENCES [user](id),
+	tongtien		decimal(12,3)	NOT NULL,
+	dienthoai		varchar(11)		NOT NULL,
+	diachi			nvarchar(255)	NOT NULL
+)
+GO
+
+CREATE TABLE hoadonchitiet
+(
+	id				int				PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	mahd			int				FOREIGN KEY REFERENCES hoadon(id),
+	masp			nvarchar(50)	FOREIGN KEY REFERENCES sanpham(masp),
+	soluong			int				NOT NULL,
+	gia				decimal(12,3)	NOT NULL
+)	
+GO
+
+INSERT INTO danhmuc(madm, tendanhmuc, ghichu) VALUES 
+('dm01', N'Túi Xách', N'dien thoai'),
+('dm02', N'Ví', NULL),
+('dm03', N'Điện Thoại', NULL),
+('dm04', N'Quần Áo', N'bán quần áo')
+GO
+
+INSERT INTO sanpham(masp, tensp, giasp, mota, hinh, soluong, madm) VALUES 
+('sp01', N'Túi Xách Hiệu', 5000000, N'mu sai gon', 'tuixach4.jpg', 10, 'dm01'),
+('sp02', N'Túi Xách Second', 100000, N'mu ha noi', 'tuixach3.jpg', 10, 'dm01'),
+('sp03', N'ví', 8888000, N'vi', 'vi4.jpg', 10, 'dm02'),
+('sp04', N'Ví ABC', 67890445, NULL, 'vi3.jpg', 10, 'dm02'),
+('sp05', N'Túi Xách', 566655, N'mu abc', 'tuixach.jpg', 10, 'dm01'),
+('sp06', N'Túi Xách US', 43536565, N'Mu Abc chuyên', 'tuixach1.jpg', 10, 'dm01'),
+('sp07', N'Túi Xách Việt Nam', 32432434, N'Túi Xách việt', 'tuixach2.jpg', 10, 'dm01'),
+('sp08', N'Ví Chính Hãng', 45443545, N'Ví CHính hãng', 'vi.jpg', 10, 'dm02'),
+('sp09', N'Ví Đẹp', 345676879, N'Ví Đẹp', 'vi2.jpg', 10, 'dm02'),
+('sp10', N'Vi Xinh', 6000000, N'Ví', 'vi3.jpg', 10, 'dm02')
+GO
+
+INSERT INTO [user](username, [password], fullname, email, phone, [role]) VALUES
+('teo', '123', N'teo', 'teo@fpt.edu.vn', '0907774677', 1),
+('admin', '123', N'Nguyễn Trần Duy', 'duy@fpt.edu.vn', '0988444111', 0)
+GO
